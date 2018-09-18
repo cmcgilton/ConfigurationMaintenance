@@ -65,7 +65,8 @@ namespace ConfigurationMaintenanceApi.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IConfigurationService>().To<ConfigurationService>().InSingletonScope();           
+            kernel.Bind<IConfigurationService>().To<ConfigurationService>().InSingletonScope();
+            //kernel.Bind<IConfigurationService>().ToConstant(new ConfigurationService(new XmlFileManager()));// ().InSingletonScope();
             kernel.Bind<IFileManager>().To<XmlFileManager>();
         }        
     }
