@@ -62,7 +62,6 @@ namespace ConfigurationMaintenanceApi.Controllers
         [ResponseType(typeof(bool))]
         public HttpResponseMessage Add([FromBody]ConfigItem configItem)
         {
-
             return Request.CreateResponse(HttpStatusCode.OK, _configurationService.Add(configItem));
         }
 

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationService", "Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationMaintenanceApiTests", "ConfigurationMaintenanceApiTests\ConfigurationMaintenanceApiTests.csproj", "{7F6ED88E-4DC4-429E-A5E5-7218EB5AEE46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationServiceTests", "ConfigurationServiceTests\ConfigurationServiceTests.csproj", "{D2594CA4-3827-4158-AC45-F5CC9F6543C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7F6ED88E-4DC4-429E-A5E5-7218EB5AEE46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F6ED88E-4DC4-429E-A5E5-7218EB5AEE46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F6ED88E-4DC4-429E-A5E5-7218EB5AEE46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2594CA4-3827-4158-AC45-F5CC9F6543C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2594CA4-3827-4158-AC45-F5CC9F6543C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2594CA4-3827-4158-AC45-F5CC9F6543C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2594CA4-3827-4158-AC45-F5CC9F6543C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
