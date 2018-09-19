@@ -34,5 +34,11 @@ namespace ConfigurationManager
         /// </summary>
         /// <param name="configItem">configuration item to add.</param>
         bool Add(IConfigItem configItem);
+
+        /// <summary>
+        /// Delete entry from the configuration.
+        /// </summary>
+        /// <param name="configItem">configuration item to delete.</param>
+        bool Delete(IConfigItem configItem);
     }
 }

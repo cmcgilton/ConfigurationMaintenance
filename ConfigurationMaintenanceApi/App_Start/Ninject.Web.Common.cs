@@ -5,9 +5,7 @@ namespace ConfigurationMaintenanceApi.App_Start
 {
     using System;
     using System.Web;
-
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
     using Ninject;
     using Ninject.Web.Common;
     using Ninject.Web.Common.WebHost;
@@ -68,6 +66,7 @@ namespace ConfigurationMaintenanceApi.App_Start
             kernel.Bind<IConfigurationService>().To<ConfigurationService>().InSingletonScope();
             //kernel.Bind<IConfigurationService>().ToConstant(new ConfigurationService(new XmlFileManager()));// ().InSingletonScope();
             kernel.Bind<IFileManager>().To<XmlFileManager>();
+            kernel.Bind<IXDocumentWrapper>().To<XDocumentWrapper>();
         }        
     }
 }

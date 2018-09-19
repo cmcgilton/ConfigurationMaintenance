@@ -16,6 +16,13 @@ namespace ConfigurationManager
         private const string keyAttribute = "key";
         private const string valueAttribute = "value";
 
+        private IXDocumentWrapper _xDocumentWrapper;
+
+        public XmlFileManager(IXDocumentWrapper xDocumentWrapper)
+        {
+            _xDocumentWrapper = xDocumentWrapper;
+        }
+
         /// <summary>
         /// Retrieve all the config items from the xml file.
         /// </summary>
@@ -24,7 +31,7 @@ namespace ConfigurationManager
         {
             var configItems = new List<IConfigItem>();
 
-            var file = XDocument.Load(filePath);
+            var file = _xDocumentWrapper.Load(filePath);
             var items = file.Element(itemsElement).Elements(itemElement);
                         
             foreach(var item in items)
@@ -44,7 +51,7 @@ namespace ConfigurationManager
         {
             //throw new Exception("some error");
 
-            var file = XDocument.Load(filePath);
+            var file = _xDocumentWrapper.Load(filePath);
             var root = file.Element(itemsElement);
             var items = root.Elements(itemElement);
 
@@ -70,7 +77,7 @@ namespace ConfigurationManager
         {
             //throw new Exception("some error");
 
-            var file = XDocument.Load(filePath);
+            var file = _xDocumentWrapper.Load(filePath);
             var root = file.Element(itemsElement);
             var items = root.Elements(itemElement);
 

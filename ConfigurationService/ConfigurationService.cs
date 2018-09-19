@@ -147,7 +147,17 @@ namespace ConfigurationManager
 
             return true;
         }
-        
+
+        /// <summary>
+        /// Delete entry from the configuration.
+        /// </summary>
+        /// <param name="configItem">configuration item to delete.</param>
+        /// <returns>boolean of success/failure.</returns>
+        public bool Delete(IConfigItem configItem)
+        {
+            throw new NotImplementedException();
+        }
+
         private void LoadValuesIntoCache()
         {
             if(_memoryCache.GetCount() == 0)
@@ -159,6 +169,6 @@ namespace ConfigurationManager
                     _memoryCache.Add(item.key, item, _cacheItemPolicy);
                 }
             }                    
-        }
+        }        
     }
 }
