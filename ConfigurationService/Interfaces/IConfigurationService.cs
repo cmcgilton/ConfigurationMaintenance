@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ConfigurationManager
 {
@@ -14,25 +10,27 @@ namespace ConfigurationManager
         /// <summary>
         /// Get all entries from the configuration.
         /// </summary>
-        /// <returns>Dictionary of key value pairs.</returns>
+        /// <returns>List of key value pairs.</returns>
         List<IConfigItem> Get();
 
         /// <summary>
         /// Get single entry from the configuration.
         /// </summary>
-        /// <returns>Value associated with the key.</returns>
+        /// <returns>Configuration item associated with the key.</returns>
         IConfigItem Get(string key);
 
         /// <summary>
         /// Update entry in the configuration.
         /// </summary>
         /// <param name="configItem">configuration item to update.</param>
+        /// <returns>boolean of success/failure.</returns>
         bool Update(IConfigItem configItem);
 
         /// <summary>
         /// Add entry into the configuration.
         /// </summary>
         /// <param name="configItem">configuration item to add.</param>
+        /// <returns>boolean of success/failure.</returns>
         bool Add(IConfigItem configItem);
 
         /// <summary>

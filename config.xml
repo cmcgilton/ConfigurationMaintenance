@@ -1,17 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <items>
-  <item key="123" value="abc" />
-  <item key="321" value="def" />
-  <item key="1234" value="abc" />
-  <item key="1234" value="abc" />
-  <item key="999" value="000" />
-  <item key="111" value="000" />
-  <item key="1131" value="0003" />
-  <item key="113s1" value="0003" />
-  <item key="113s12" value="00019" />
-  <item key="1s13s12" value="0003" />
-  <item key="1s13s1s22" value="0003" />
-  <item key="000" value="0003" />
-  <item key="9999" value="00019990" />
-  <item key="99999" value="0003" />
+  <item key="key1" value="value1" />
+  <item key="key2" value="value2" />
+  <item key="key3" value="value3" />
+  <item key="key4" value="value4" />
 </items>

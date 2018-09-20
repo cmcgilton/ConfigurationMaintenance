@@ -15,6 +15,39 @@ namespace ConfigurationServiceTests
     {
         private IConfigurationService _configurationService;
         private IFileManager _fileManager;
+        private IMemoryCacheService _memoryCacheService;
+
+        [SetUp]
+        public void Setup()
+        {
+            _fileManager = Substitute.For<IFileManager>();
+            _memoryCacheService = Substitute.For<IMemoryCacheService>();
+        }
+
+        [Test]
+        public void ConfigurationManager_WhenCreated_PopulatesConfigItemListFromFile()
+        {
+            // Arrange
+            var configItems = new List<IConfigItem>()
+            {
+                new ConfigItem("key1", "value1"),
+                new ConfigItem("key2", "value2"),
+                new ConfigItem("key3", "value3"),
+            };
+
+            _memoryCacheService.GetCount().Returns(0);
+            _fileManager.ReadAllEntriesFromFile().Returns(configItems);
+
+            // Act
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
+
+
+            // Assert
+            _memoryCacheService.Received(1).Add(configItems[0]);
+            _memoryCacheService.Received(1).Add(configItems[1]);
+            _memoryCacheService.Received(1).Add(configItems[2]);
+        }
+
 
         [Test]
         public void Get_WhenCalled_ReturnsConfigItemList()
@@ -27,8 +60,9 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", "value3"),
             };
 
+            _memoryCacheService.GetAll().Returns(configItems);
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
 
             // Act
             var result = _configurationService.Get();
@@ -40,7 +74,7 @@ namespace ConfigurationServiceTests
             Assert.AreEqual(configItems[1].value, result.First(x => x.key == configItems[1].key).value);
             Assert.AreEqual(configItems[2].value, result.First(x => x.key == configItems[2].key).value);
 
-            _fileManager.Received(1).ReadAllEntriesFromFile();
+            _memoryCacheService.Received(1).GetAll();
         }
 
         [Test]
@@ -54,18 +88,20 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", "value3"),
             };
 
+            var item = new ConfigItem("key1", "value1");
+
+            _memoryCacheService.Contains(item.key).Returns(true);
+            _memoryCacheService.Get(item.key).Returns(item);
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
 
             // Act
-            var result = _configurationService.Get(configItems.First().key);
+            var result = _configurationService.Get(item.key);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(configItems[0].key, result.key);
-            Assert.AreEqual(configItems[0].value, result.value);
-            
-            _fileManager.Received(1).ReadAllEntriesFromFile();
+            Assert.AreEqual(item.key, result.key);
+            Assert.AreEqual(item.value, result.value);            
         }
 
         [Test]        
@@ -80,8 +116,9 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", "value3"),
             };
 
+            _memoryCacheService.Contains(invalidKey).Returns(false);
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
 
             // Act
             Assert.Throws<KeyNotFoundException>(() => _configurationService.Get(invalidKey));
@@ -101,14 +138,17 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", "value3"),
             };
 
+            var item = new ConfigItem("key1", "value1");
+
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _memoryCacheService.Contains(item.key).Returns(true);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
 
             // Act
-            Assert.Throws<DuplicateKeyException>(() => _configurationService.Add(configItems.First()));
+            Assert.Throws<DuplicateKeyException>(() => _configurationService.Add(item));
 
             // Assert
-            _fileManager.Received(1).ReadAllEntriesFromFile();
+            _memoryCacheService.DidNotReceive().Add(item);
             _fileManager.DidNotReceive().AddEntry(Arg.Any<ConfigItem>());
         }
 
@@ -125,16 +165,18 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", "value3"),
             };
 
+            _memoryCacheService.Contains(newConfigItem.key).Returns(false);
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
 
             // Act
             _configurationService.Add(newConfigItem);
 
             // Assert
-            Assert.AreEqual(newConfigItem.value, _configurationService.Get(newConfigItem.key).value);
-            _fileManager.Received(1).ReadAllEntriesFromFile();
+            _memoryCacheService.Received(1).Add(newConfigItem);
             _fileManager.Received(1).AddEntry(newConfigItem);
+            _fileManager.Received(1).ReadAllEntriesFromFile();
+            
         }
 
         [Test]
@@ -149,16 +191,17 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", "value3"),
             };
 
+            _memoryCacheService.Contains(validItem.key).Returns(false, true);
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
             _fileManager.When(x => x.AddEntry(validItem)).Throw(new Exception("some error"));
 
             // Act
             Assert.Throws<ConfigAddException>(() => _configurationService.Add(validItem));
 
             // Assert
-            Assert.Throws<KeyNotFoundException>(() => _configurationService.Get(validItem.key));
-            _fileManager.Received(1).ReadAllEntriesFromFile();
+            _memoryCacheService.Received(1).Add(validItem);
+            _memoryCacheService.Received(1).Remove(validItem.key);
             _fileManager.Received(1).AddEntry(validItem);
         }
 
@@ -175,7 +218,7 @@ namespace ConfigurationServiceTests
             };
 
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
 
             // Act
             Assert.Throws<KeyNotFoundException>(() => _configurationService.Update(invalidItem));
@@ -198,15 +241,17 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", originalValue),
             };
 
+            _memoryCacheService.Contains(validItem.key).Returns(true);
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
             _fileManager.When(x => x.UpdateEntry(validItem)).Throw(new Exception("some error"));
 
             // Act
             Assert.Throws<ConfigUpdateException>(() => _configurationService.Update(validItem));
 
             // Assert
-            Assert.AreEqual(originalValue, _configurationService.Get(validItem.key).value);
+            _memoryCacheService.Received(1).Update(validItem);
+            _memoryCacheService.Received(1).Reset(validItem.key);
             _fileManager.Received(1).ReadAllEntriesFromFile();
             _fileManager.Received(1).UpdateEntry(validItem);
         }
@@ -224,22 +269,18 @@ namespace ConfigurationServiceTests
                 new ConfigItem("key3", "value3"),
             };
 
+            _memoryCacheService.Contains(updateConfigItem.key).Returns(true);
             _fileManager.ReadAllEntriesFromFile().Returns(configItems);
-            _configurationService = new ConfigurationService(_fileManager);
+            _configurationService = new ConfigurationService(_fileManager, _memoryCacheService);
 
             // Act
             _configurationService.Update(updateConfigItem);
 
             // Assert
-            Assert.AreEqual(updateConfigItem.value, _configurationService.Get(updateConfigItem.key).value);
             _fileManager.Received(1).ReadAllEntriesFromFile();
+            _memoryCacheService.Received(1).Update(updateConfigItem);
+            _memoryCacheService.DidNotReceive().Reset(updateConfigItem.key);
             _fileManager.Received(1).UpdateEntry(updateConfigItem);
-        }
-        
-        [SetUp]
-        public void Setup()
-        {
-            _fileManager = Substitute.For<IFileManager>();
         }
     }
 }

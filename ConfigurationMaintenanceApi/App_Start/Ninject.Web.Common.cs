@@ -45,9 +45,7 @@ namespace ConfigurationMaintenanceApi.App_Start
                 kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
                 RegisterServices(kernel);
-
-                //System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(kernel);
-                
+                                
                 return kernel;
             }
             catch
@@ -64,9 +62,9 @@ namespace ConfigurationMaintenanceApi.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<IConfigurationService>().To<ConfigurationService>().InSingletonScope();
-            //kernel.Bind<IConfigurationService>().ToConstant(new ConfigurationService(new XmlFileManager()));// ().InSingletonScope();
             kernel.Bind<IFileManager>().To<XmlFileManager>();
             kernel.Bind<IXDocumentWrapper>().To<XDocumentWrapper>();
+            kernel.Bind<IMemoryCacheService>().To<MemoryCacheService>().InSingletonScope();
         }        
     }
 }

@@ -1,19 +1,21 @@
 ﻿using ConfigurationManager.CustomExceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web;
 using System.Web.Http.Filters;
 
 namespace ConfigurationMaintenanceApi
 {
+    /// <summary>
+    /// Global exception handler for configuration API.
+    /// </summary>
     public class GlobalExceptionHandlerAttribute : ExceptionFilterAttribute
-    {/// <summary>
-     /// Exception handler for exceptions raised and not caught in the controllers.
-     /// </summary>
-     /// <param name="context"></param>
+    {
+        /// <summary>
+        /// Exception handler for exceptions raised and not caught in the controllers.
+        /// </summary>
+        /// <param name="context">Action context.</param>
         public override void OnException(HttpActionExecutedContext context)
         {
             var statusCode = HttpStatusCode.InternalServerError;

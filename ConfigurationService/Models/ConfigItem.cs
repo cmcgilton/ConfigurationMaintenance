@@ -1,7 +1,4 @@
-﻿using ConfigurationManager;
-using System;
-using System.Runtime.Serialization;
-
+﻿
 namespace ConfigurationManager
 {
     /// <summary>

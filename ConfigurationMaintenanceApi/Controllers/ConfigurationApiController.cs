@@ -10,7 +10,7 @@ namespace ConfigurationMaintenanceApi.Controllers
     /// <summary>
     /// Api Controller for the configuration maintenance.
     /// </summary>
-    [RoutePrefix("api/v2/Configuration")]
+    [RoutePrefix("api/configuration")]
     public class ConfigurationApiController : ApiController, IConfigurationApi
     {
         private IConfigurationService _configurationService;
@@ -35,8 +35,7 @@ namespace ConfigurationMaintenanceApi.Controllers
         {
             var configEntries = _configurationService.Get();
             return Request.CreateResponse(HttpStatusCode.OK, configEntries);            
-        }
-               
+        }               
 
         /// <summary>
         /// Get specific entry from the configuration.
@@ -50,13 +49,12 @@ namespace ConfigurationMaintenanceApi.Controllers
         {
             return Request.CreateResponse(HttpStatusCode.OK, _configurationService.Get(key));
         }
-        
+
         /// <summary>
-        /// used to add an entry to the configuration.
+        /// Used to add an entry to the configuration.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="configItem">Config item to add.</param>
+        /// <returns>true if successful.</returns>
         [HttpPost]
         [Route("Add")]
         [ResponseType(typeof(bool))]
@@ -66,11 +64,10 @@ namespace ConfigurationMaintenanceApi.Controllers
         }
 
         /// <summary>
-        /// used to update an entry in the configuration.
+        /// Used to update an entry in the configuration.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="configItem">Config item to update.</param>
+        /// <returns>true if successful.</returns>
         [HttpPut]
         [Route("Update")]
         [ResponseType(typeof(bool))]

@@ -1,13 +1,15 @@
-﻿using ConfigurationManager;
-using System;
+﻿using System;
+using System.Web;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace ConfigurationManager
 {
+    /// <summary>
+    /// Manager for administering xml config file.
+    /// </summary>
     public class XmlFileManager : IFileManager
     {
         private const string filePath = @"C:\Source\API\config.xml";
@@ -35,8 +37,11 @@ namespace ConfigurationManager
             var items = file.Element(itemsElement).Elements(itemElement);
                         
             foreach(var item in items)
-            {
-                configItems.Add(new ConfigItem(item.Attribute(keyAttribute).Value, item.Attribute(valueAttribute).Value));
+            {                
+                var key = WebUtility.HtmlDecode(item.Attribute(keyAttribute).Value);
+                var value = WebUtility.HtmlDecode(item.Attribute(valueAttribute).Value);
+
+                configItems.Add(new ConfigItem(key, value));
             }
                                    
             return configItems;
@@ -50,12 +55,14 @@ namespace ConfigurationManager
         public void AddEntry(IConfigItem configItem)
         {
             //throw new Exception("some error");
+            var key = WebUtility.HtmlEncode(configItem.key);
+            var value = WebUtility.HtmlEncode(configItem.value);
 
             var file = _xDocumentWrapper.Load(filePath);
             var root = file.Element(itemsElement);
             var items = root.Elements(itemElement);
 
-            var newItem = new XElement(itemElement, new XAttribute(keyAttribute, configItem.key), new XAttribute(valueAttribute, configItem.value));
+            var newItem = new XElement(itemElement, new XAttribute(keyAttribute, key), new XAttribute(valueAttribute, value));
             if (items.Any())
             {
                 items.Last().AddAfterSelf(newItem);
@@ -76,6 +83,8 @@ namespace ConfigurationManager
         public bool UpdateEntry(IConfigItem configItem)
         {
             //throw new Exception("some error");
+            var key = WebUtility.HtmlEncode(configItem.key);
+            var value = WebUtility.HtmlEncode(configItem.value);
 
             var file = _xDocumentWrapper.Load(filePath);
             var root = file.Element(itemsElement);
@@ -83,10 +92,10 @@ namespace ConfigurationManager
 
             if (items.Any())
             {
-                var item = items.FirstOrDefault(x => x.Attribute(keyAttribute).Value == configItem.key);
+                var item = items.FirstOrDefault(x => x.Attribute(keyAttribute).Value == key);
                 if (item != null)
                 {
-                    item.Attribute(valueAttribute).Value = configItem.value;
+                    item.Attribute(valueAttribute).Value = value;
                     file.Save(filePath);
                     return true;
                 }

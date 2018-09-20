@@ -1,34 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Caching;
-using System.Text;
-using System.Threading.Tasks;
-using ConfigurationManager;
 using System.Threading;
 using ConfigurationManager.CustomExceptions;
-using System.Diagnostics;
 
 namespace ConfigurationManager
 {
+    /// <summary>
+    /// Configuration service 
+    /// </summary>
     public class ConfigurationService : IConfigurationService
     {
         private IFileManager _fileManager;
-        private MemoryCache _memoryCache;
-        private CacheItemPolicy _cacheItemPolicy;
+        private IMemoryCacheService _memoryCacheService;
         private Object _lockObject;      
 
-        public ConfigurationService(IFileManager fileManager)
+        public ConfigurationService(IFileManager fileManager, IMemoryCacheService memoryCacheService)
         {
             _fileManager = fileManager;
-            
+            _memoryCacheService = memoryCacheService;
             _lockObject = new object();
-            _memoryCache = new MemoryCache("configCache");
-            _cacheItemPolicy = new CacheItemPolicy
-            {
-                AbsoluteExpiration = DateTimeOffset.MaxValue
-            };
-
+            
             LoadValuesIntoCache();           
         }
 
@@ -38,13 +29,7 @@ namespace ConfigurationManager
         /// <returns>Dictionary of key value pairs.</returns>
         public List<IConfigItem> Get()
         {
-            var items = new List<IConfigItem>();
-            foreach (var item in _memoryCache)
-            {
-                items.Add((IConfigItem)item.Value);
-            }
-
-            return items;
+            return _memoryCacheService.GetAll();
         }
 
         /// <summary>
@@ -53,14 +38,12 @@ namespace ConfigurationManager
         /// <returns>Value associated with the key.</returns>
         public IConfigItem Get(string key)
         {
-            if (!_memoryCache.Contains(key))
+            if (!_memoryCacheService.Contains(key))
             {
                 throw new KeyNotFoundException(string.Format("Configuration key not found {0}", key));
             }
-
-            var configItem = (IConfigItem)_memoryCache.Get(key);
             
-            return configItem;
+            return _memoryCacheService.Get(key);
         }
 
         /// <summary>
@@ -71,7 +54,7 @@ namespace ConfigurationManager
         /// <returns>boolean of success/failure.</returns>
         public bool Update(IConfigItem configItem)
         {
-            if (!_memoryCache.Contains(configItem.key))
+            if (!_memoryCacheService.Contains(configItem.key))
             {
                 throw new KeyNotFoundException(string.Format("Configuration key not found {0}", configItem.key));    
             }
@@ -82,14 +65,14 @@ namespace ConfigurationManager
                 {
                     Thread.Sleep(5000);
 
-                    ((ConfigItem)_memoryCache[configItem.key]).value = configItem.value;
+                    _memoryCacheService.Update(configItem);
                     _fileManager.UpdateEntry(configItem);                   
                 }
                 catch(Exception e)
                 {
-                    ((ConfigItem)_memoryCache[configItem.key]).resetValue();
+                    _memoryCacheService.Reset(configItem.key);
                     
-                    throw new ConfigUpdateException(e.Message);
+                    throw new ConfigUpdateException(string.Format("Configuration update failed for key {0}", configItem.key));
                 }
                 finally
                 {
@@ -112,7 +95,7 @@ namespace ConfigurationManager
         /// <returns>boolean of success/failure.</returns>
         public bool Add(IConfigItem configItem)
         {
-            if (_memoryCache.Contains(configItem.key))
+            if (_memoryCacheService.Contains(configItem.key))
             {
                 throw new DuplicateKeyException(string.Format("Configuration key already exists {0}", configItem.key));
             }
@@ -123,17 +106,17 @@ namespace ConfigurationManager
                 {
                     Thread.Sleep(5000);
 
-                    _memoryCache.Add(configItem.key, configItem, _cacheItemPolicy);
+                    _memoryCacheService.Add(configItem);
                     _fileManager.AddEntry(configItem);                                       
                 }
                 catch (Exception e)
                 {
-                    if(_memoryCache.Contains(configItem.key))
+                    if(_memoryCacheService.Contains(configItem.key))
                     {
-                        _memoryCache.Remove(configItem.key);
+                        _memoryCacheService.Remove(configItem.key);
                     }
 
-                    throw new ConfigAddException(e.Message);
+                    throw new ConfigAddException(string.Format("Configuration add failed for key {0}", configItem.key));
                 }
                 finally
                 {
@@ -160,13 +143,13 @@ namespace ConfigurationManager
 
         private void LoadValuesIntoCache()
         {
-            if(_memoryCache.GetCount() == 0)
+            if(_memoryCacheService.GetCount() == 0)
             {
                 var config = _fileManager.ReadAllEntriesFromFile();
 
                 foreach (var item in config)
                 {
-                    _memoryCache.Add(item.key, item, _cacheItemPolicy);
+                    _memoryCacheService.Add(item);
                 }
             }                    
         }        
