@@ -13,6 +13,9 @@ namespace ConfigurationManager
             _state = state;
         }
 
+        /// <summary>
+        /// Stores the previous state.
+        /// </summary>
         public string State
         {
             get { return _state; }
