@@ -30,8 +30,8 @@ namespace ConfigurationManager
         /// <summary>
         /// Deletes a configuration entry.
         /// </summary>
-        /// <param name="configItem">Config item to delete.</param>
+        /// <param name="key">Config item key to delete.</param>
         /// <returns>boolean for success/failure.</returns>
-        bool DeleteEntry(IConfigItem configItem);
+        bool DeleteEntry(string key);
     }
 }

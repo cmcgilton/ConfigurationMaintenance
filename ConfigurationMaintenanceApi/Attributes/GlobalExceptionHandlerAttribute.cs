@@ -26,7 +26,8 @@ namespace ConfigurationMaintenanceApi
                 statusCode = HttpStatusCode.NotFound;
             }
             else if(exception is DuplicateKeyException || exception is ConfigAddException ||
-                    exception is ConfigUpdateException || exception is ResourceLockedException)
+                    exception is ConfigUpdateException || exception is ResourceLockedException ||
+                    exception is ConfigDeleteException)
             {
                 statusCode = HttpStatusCode.Conflict;
             }            

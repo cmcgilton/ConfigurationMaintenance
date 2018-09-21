@@ -37,6 +37,6 @@ namespace ConfigurationManager
         /// Delete entry from the configuration.
         /// </summary>
         /// <param name="configItem">configuration item to delete.</param>
-        bool Delete(IConfigItem configItem);
+        bool Delete(string key);
     }
 }

@@ -28,7 +28,7 @@ namespace ConfigurationMaintenanceApi.Controllers
         /// <summary>
         /// Get all entries in the configuration.
         /// </summary>
-        /// <returns>Dictionary of key value pairs.</returns>
+        /// <returns>List of key value pairs.</returns>
         [HttpGet]
         [Route("Get")]
         [ResponseType(typeof(List<IConfigItem>))]
@@ -61,6 +61,16 @@ namespace ConfigurationMaintenanceApi.Controllers
         [ResponseType(typeof(bool))]
         public HttpResponseMessage Add([FromBody]ConfigItem configItem)
         {
+            var test = configItem;
+
+            return Request.CreateResponse(HttpStatusCode.OK, _configurationService.Add(configItem));
+        }
+
+        [HttpPost]
+        [Route("AddCustom")]
+        [ResponseType(typeof(bool))]
+        public HttpResponseMessage Add([FromBody]CustomConfigItem configItem)
+        {
             return Request.CreateResponse(HttpStatusCode.OK, _configurationService.Add(configItem));
         }
 
@@ -75,6 +85,20 @@ namespace ConfigurationMaintenanceApi.Controllers
         public HttpResponseMessage Update([FromBody]ConfigItem configItem)
         {
             return Request.CreateResponse(HttpStatusCode.OK, _configurationService.Update(configItem));
+        }
+
+        /// <summary>
+        /// Used to delete an entry from the configuration.
+        /// </summary>
+        /// <param name="key">item key to Delete.</param>
+        /// <returns></returns>
+
+        [HttpDelete]
+        [Route("Delete/{key}")]
+        [ResponseType(typeof(bool))]
+        public HttpResponseMessage Delete(string key)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, _configurationService.Delete(key));
         }
     }
 }

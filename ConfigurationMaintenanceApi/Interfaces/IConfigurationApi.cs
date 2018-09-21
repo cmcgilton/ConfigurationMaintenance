@@ -26,10 +26,24 @@ namespace ConfigurationMaintenanceApi
         HttpResponseMessage Add(ConfigItem configItem);
 
         /// <summary>
+        /// Used to add an entry to the configuration.
+        /// </summary>
+        /// <param name="configItem">Config item to add.</param>
+        /// <returns>true if successful.</returns>
+        HttpResponseMessage Add(CustomConfigItem configItem);
+
+        /// <summary>
         /// Used to update an entry in the configuration.
         /// </summary>
         /// <param name="configItem">Config item to update.</param>
         /// <returns>true if successful.</returns>
-        HttpResponseMessage Update(ConfigItem configItem);       
+        HttpResponseMessage Update(ConfigItem configItem);
+
+        /// <summary>
+        /// Delete specific entry from the configuration.
+        /// </summary>
+        /// <param name="key">Configuration key to delete.</param>
+        /// <returns>IConfigItem</returns>
+        HttpResponseMessage Delete(string key);
     }
 }

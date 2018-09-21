@@ -17,6 +17,7 @@ namespace ConfigurationManager
         private const string itemsElement = "items";
         private const string keyAttribute = "key";
         private const string valueAttribute = "value";
+        private const string value2Attribute = "value2";
 
         private IXDocumentWrapper _xDocumentWrapper;
 
@@ -57,12 +58,23 @@ namespace ConfigurationManager
             //throw new Exception("some error");
             var key = WebUtility.HtmlEncode(configItem.key);
             var value = WebUtility.HtmlEncode(configItem.value);
+                        
+            var attributes = new List<object> {
+                new XAttribute(keyAttribute, key),
+                new XAttribute(valueAttribute, value)
+            };
+            
+            if (configItem is ICustomConfigItem)
+            {
+                attributes.Add(new XAttribute(value2Attribute, ((ICustomConfigItem)configItem).value2));
+            }
+
+            var newItem = new XElement(itemElement, attributes.ToArray());                                       
 
             var file = _xDocumentWrapper.Load(filePath);
             var root = file.Element(itemsElement);
             var items = root.Elements(itemElement);
-
-            var newItem = new XElement(itemElement, new XAttribute(keyAttribute, key), new XAttribute(valueAttribute, value));
+             
             if (items.Any())
             {
                 items.Last().AddAfterSelf(newItem);
@@ -109,9 +121,27 @@ namespace ConfigurationManager
         /// </summary>
         /// <param name="configItem">Config item to delete.</param>
         /// <returns>boolean for success/failure.</returns>
-        public bool DeleteEntry(IConfigItem configItem)
+        public bool DeleteEntry(string deleteKey)
         {
-            throw new NotImplementedException();
+            //throw new Exception("some error");
+            var key = WebUtility.HtmlEncode(deleteKey);
+            
+            var file = _xDocumentWrapper.Load(filePath);
+            var root = file.Element(itemsElement);
+            var items = root.Elements(itemElement);
+
+            if (items.Any())
+            {
+                var item = items.FirstOrDefault(x => x.Attribute(keyAttribute).Value == key);
+                if (item != null)
+                {
+                    item.Remove();
+                    file.Save(filePath);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

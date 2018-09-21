@@ -134,11 +134,39 @@ namespace ConfigurationManager
         /// <summary>
         /// Delete entry from the configuration.
         /// </summary>
-        /// <param name="configItem">configuration item to delete.</param>
+        /// <param name="key">key used to delete item from configuration.</param>
         /// <returns>boolean of success/failure.</returns>
-        public bool Delete(IConfigItem configItem)
+        public bool Delete(string key)
         {
-            throw new NotImplementedException();
+            if(!_memoryCacheService.Contains(key))
+            {
+                throw new KeyNotFoundException(string.Format("Configuration key not found {0}", key));
+            }
+
+            if (Monitor.TryEnter(_lockObject))
+            {
+                try
+                {
+                    Thread.Sleep(5000);
+
+                   _fileManager.DeleteEntry(key);
+                   _memoryCacheService.Remove(key);
+                }
+                catch (Exception e)
+                {
+                    throw new ConfigDeleteException(string.Format("Configuration delete failed for key {0}", key));
+                }
+                finally
+                {
+                    Monitor.Exit(_lockObject);
+                }
+            }
+            else
+            {
+                throw new ResourceLockedException(string.Format("Resource locked while deleting config item {0}", key));
+            }
+
+            return false;
         }
 
         private void LoadValuesIntoCache()
@@ -152,6 +180,8 @@ namespace ConfigurationManager
                     _memoryCacheService.Add(item);
                 }
             }                    
-        }        
+        }
+
+        
     }
 }

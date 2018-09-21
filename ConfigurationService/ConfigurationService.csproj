@@ -46,16 +46,19 @@
   <ItemGroup>
     <Compile Include="ConfigurationService.cs" />
     <Compile Include="CustomExceptions\ConfigAddException.cs" />
+    <Compile Include="CustomExceptions\ConfigDeleteException.cs" />
     <Compile Include="CustomExceptions\ConfigUpdateException.cs" />
     <Compile Include="CustomExceptions\DuplicateKeyException.cs" />
     <Compile Include="CustomExceptions\ResourceLockedException.cs" />
     <Compile Include="Interfaces\IConfigItem.cs" />
     <Compile Include="Interfaces\IConfigurationService.cs" />
+    <Compile Include="Interfaces\ICustomConfigItem.cs" />
     <Compile Include="Interfaces\IFileManager.cs" />
     <Compile Include="Interfaces\IMemoryCacheService.cs" />
     <Compile Include="Interfaces\IXDocumentWrapper.cs" />
     <Compile Include="MemoryCacheService.cs" />
     <Compile Include="Models\ConfigItem.cs" />
+    <Compile Include="Models\CustomConfigItem.cs" />
     <Compile Include="Models\Momento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XDocumentWrapper.cs" />
