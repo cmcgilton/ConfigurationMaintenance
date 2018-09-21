@@ -91,7 +91,7 @@ namespace ConfigurationManager
         /// <param name="key">Item key to reset.</param>
         public void Reset(string key)
         {
-            ((ConfigItem)_memoryCache[key]).resetValue();
+            ((ConfigItem)_memoryCache[key]).Rollback();
         }
 
         /// <summary>
@@ -100,6 +100,7 @@ namespace ConfigurationManager
         /// <param name="item">Config item to update.</param>
         public void Update(IConfigItem item)
         {
+            ((ConfigItem)_memoryCache[item.key]).CreateMomento();
             ((ConfigItem)_memoryCache[item.key]).value = item.value;
         }
     }

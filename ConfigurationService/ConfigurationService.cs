@@ -64,7 +64,7 @@ namespace ConfigurationManager
                 try
                 {
                     Thread.Sleep(5000);
-
+                    
                     _memoryCacheService.Update(configItem);
                     _fileManager.UpdateEntry(configItem);                   
                 }

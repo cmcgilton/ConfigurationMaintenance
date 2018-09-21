@@ -7,7 +7,7 @@ namespace ConfigurationManager
     public class ConfigItem : IConfigItem
     {
         private string _value;
-        private string _previousValue;
+        private Momento _momento;
 
         /// <summary>
         /// Constructor for Config item.
@@ -17,7 +17,7 @@ namespace ConfigurationManager
         public ConfigItem(string key, string value)
         {
             this.key = key;
-            _value = _previousValue = value;
+            _value = value;
         }
 
         /// <summary>
@@ -33,17 +33,25 @@ namespace ConfigurationManager
                 return _value;
             }
             set {
-                _previousValue = _value;
                 _value = value;
             }
+        }
+                
+        /// <summary>
+        /// Used to create an instance of the current state.
+        /// </summary>
+        public void CreateMomento()
+        {
+            _momento = new Momento(_value);
         }
 
         /// <summary>
         /// used to reset the value back to its previous state.
         /// </summary>
-        public void resetValue()
+        public void Rollback()
         {
-            _value = _previousValue;
+            _value = _momento.State;
+            _momento = null;
         }
     }
 }

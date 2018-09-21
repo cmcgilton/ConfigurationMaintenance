@@ -16,8 +16,13 @@
         string value { get; set; }
 
         /// <summary>
+        /// Used to create a momento for the current state.
+        /// </summary>
+        void CreateMomento();
+
+        /// <summary>
         /// used to reset the value back to its previous state.
         /// </summary>
-        void resetValue();
+        void Rollback();
     }
 }
