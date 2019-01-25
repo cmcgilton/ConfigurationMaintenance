@@ -5,6 +5,8 @@ using System.Web.Http;
 using System.Linq;
 using ConfigurationManager;
 using System.Web.Http.Description;
+using System.Web.Http.ModelBinding;
+using ConfigurationMaintenanceApi.CustomModelBinders;
 
 namespace ConfigurationMaintenanceApi.Controllers
 {
@@ -59,7 +61,7 @@ namespace ConfigurationMaintenanceApi.Controllers
         [HttpPost]
         [Route("Add")]
         [ResponseType(typeof(bool))]
-        public HttpResponseMessage Add([FromBody]ConfigItem configItem)
+        public HttpResponseMessage Add([ModelBinder(typeof(ConfigModelBinder))] IConfigItem configItem)
         {
             var test = configItem;
 
@@ -69,7 +71,7 @@ namespace ConfigurationMaintenanceApi.Controllers
         [HttpPost]
         [Route("AddCustom")]
         [ResponseType(typeof(bool))]
-        public HttpResponseMessage Add([FromBody]CustomConfigItem configItem)
+        public HttpResponseMessage AddCustom([FromBody]CustomConfigItem configItem)
         {
             return Request.CreateResponse(HttpStatusCode.OK, _configurationService.Add(configItem));
         }

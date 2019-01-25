@@ -4,6 +4,7 @@ using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using System.IO;
 
 namespace ConfigurationManager
 {
@@ -12,7 +13,7 @@ namespace ConfigurationManager
     /// </summary>
     public class XmlFileManager : IFileManager
     {
-        private const string filePath = @"C:\Source\API\config.xml";
+        private string filePath = $"{Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.FullName}\\config.xml";
         private const string itemElement = "item";
         private const string itemsElement = "items";
         private const string keyAttribute = "key";
@@ -42,7 +43,16 @@ namespace ConfigurationManager
                 var key = WebUtility.HtmlDecode(item.Attribute(keyAttribute).Value);
                 var value = WebUtility.HtmlDecode(item.Attribute(valueAttribute).Value);
 
-                configItems.Add(new ConfigItem(key, value));
+                var value2Item = item.Attribute(value2Attribute);
+                if (value2Item != null)
+                {
+                    var value2 = WebUtility.HtmlDecode(value2Item.Value);
+                    configItems.Add(new CustomConfigItem(key, value, value2));
+                }
+                else
+                {
+                    configItems.Add(new ConfigItem(key, value));
+                }
             }
                                    
             return configItems;

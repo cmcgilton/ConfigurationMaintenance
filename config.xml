@@ -10,4 +10,6 @@
   <item key="key49" value="value46" />
   <item key="key51" value="value46" value2="valuenew" />
   <item key="key52" value="value52" value2="value2-52" />
+  <item key="key10001" value="some value" />
+  <item key="custom1" value="some value" value2="value2" />
 </items>

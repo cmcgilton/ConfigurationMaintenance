@@ -11,8 +11,9 @@ namespace ConfigurationManager
     /// </summary>
     public class CustomConfigItem : ConfigItem, ICustomConfigItem
     {
-        public CustomConfigItem(string key, string value) : base(key, value)
+        public CustomConfigItem(string key, string value, string value2) : base(key, value)
         {
+            this.value2 = value2;
         }
 
         public string value2 { get; set; }

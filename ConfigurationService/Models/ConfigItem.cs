@@ -1,4 +1,6 @@
 ﻿
+using System.Net.PeerToPeer.Collaboration;
+
 namespace ConfigurationManager
 {
     /// <summary>

@@ -23,14 +23,14 @@ namespace ConfigurationMaintenanceApi
         /// </summary>
         /// <param name="configItem">Config item to add.</param>
         /// <returns>true if successful.</returns>
-        HttpResponseMessage Add(ConfigItem configItem);
+        HttpResponseMessage Add(IConfigItem configItem);
 
         /// <summary>
         /// Used to add an entry to the configuration.
         /// </summary>
         /// <param name="configItem">Config item to add.</param>
         /// <returns>true if successful.</returns>
-        HttpResponseMessage Add(CustomConfigItem configItem);
+        HttpResponseMessage AddCustom(CustomConfigItem configItem);
 
         /// <summary>
         /// Used to update an entry in the configuration.

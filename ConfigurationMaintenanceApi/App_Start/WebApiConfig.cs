@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
+using ConfigurationMaintenanceApi.CustomModelBinders;
+using Newtonsoft.Json;
 
 namespace ConfigurationMaintenanceApi
 {
@@ -10,15 +13,11 @@ namespace ConfigurationMaintenanceApi
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+            config.Services.Insert(typeof(ModelBinderProvider), 0, new ConfigModelBinderProvider());
+            config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
 
             // Web API routes
             config.MapHttpAttributeRoutes();
-
-            //config.Routes.MapHttpRoute(
-            //    name: "DefaultApi",
-            //    routeTemplate: "api/{controller}/{id}",
-            //    defaults: new { id = RouteParameter.Optional }
-            //);
 
             GlobalConfiguration.Configuration.Filters.Add(new GlobalExceptionHandlerAttribute());
         }
