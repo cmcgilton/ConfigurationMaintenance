@@ -67,7 +67,7 @@ namespace ConfigurationMaintenanceApi.App_Start
             kernel.Bind<IFileManager>().To<XmlFileManager>();
             kernel.Bind<IXDocumentWrapper>().To<XDocumentWrapper>();
             kernel.Bind<IMemoryCacheService>().To<MemoryCacheService>().InSingletonScope();
-            kernel.Bind<IConfigModelResolver>().To<ConfigModelResolver>();
+            kernel.Bind<ICustomModelResolver>().To<CustomModelResolver>();
         }        
     }
 }

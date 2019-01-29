@@ -13,8 +13,8 @@ namespace ConfigurationMaintenanceApi
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-            config.Services.Insert(typeof(ModelBinderProvider), 0, new ConfigModelBinderProvider());
-            config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
+            config.Services.Insert(typeof(ModelBinderProvider), 0, new CustomModelBinderProvider());
+            //config.Formatters.JsonFormatter.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
 
             // Web API routes
             config.MapHttpAttributeRoutes();

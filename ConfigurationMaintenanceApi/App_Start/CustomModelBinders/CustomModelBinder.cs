@@ -11,11 +11,11 @@ using ModelBindingContext = System.Web.Http.ModelBinding.ModelBindingContext;
 
 namespace ConfigurationMaintenanceApi.CustomModelBinders
 {
-    public class ConfigModelBinder : IModelBinder
+    public class CustomModelBinder : IModelBinder
     {
-        private IConfigModelResolver _modelResolver;
+        private ICustomModelResolver _modelResolver;
 
-        public ConfigModelBinder(IConfigModelResolver modelResolver)
+        public CustomModelBinder(ICustomModelResolver modelResolver)
         {
             _modelResolver = modelResolver;
         }

@@ -106,10 +106,11 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\CustomModelBinders\ConfigModelBinder.cs" />
-    <Compile Include="App_Start\CustomModelBinders\ConfigModelBinderProvider.cs" />
-    <Compile Include="App_Start\CustomModelBinders\ConfigModelResolver.cs" />
-    <Compile Include="App_Start\CustomModelBinders\Interfaces\IConfigModelResolver.cs" />
+    <Compile Include="App_Start\CustomModelBinders\CustomModelBinder.cs" />
+    <Compile Include="App_Start\CustomModelBinders\CustomModelBinderProvider.cs" />
+    <Compile Include="App_Start\CustomModelBinders\CustomModelResolver.cs" />
+    <Compile Include="App_Start\CustomModelBinders\Converters\JsonCreationConverter.cs" />
+    <Compile Include="App_Start\CustomModelBinders\Interfaces\ICustomModelResolver.cs" />
     <Compile Include="App_Start\Ninject.Web.Common.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\GlobalExceptionHandlerAttribute.cs" />

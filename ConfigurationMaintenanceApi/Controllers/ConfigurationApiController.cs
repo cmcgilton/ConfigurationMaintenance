@@ -61,7 +61,7 @@ namespace ConfigurationMaintenanceApi.Controllers
         [HttpPost]
         [Route("Add")]
         [ResponseType(typeof(bool))]
-        public HttpResponseMessage Add([ModelBinder(typeof(ConfigModelBinder))] IConfigItem configItem)
+        public HttpResponseMessage Add([ModelBinder(typeof(CustomModelBinder))] IConfigItem configItem)
         {
             var test = configItem;
 
