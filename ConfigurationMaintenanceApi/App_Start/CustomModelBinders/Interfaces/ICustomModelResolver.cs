@@ -8,5 +8,6 @@ namespace ConfigurationMaintenanceApi.CustomModelBinders
 {
     public interface ICustomModelResolver
     {
+        Type Resolve(object baseType, string jsonObject);
     }
 }

@@ -22,6 +22,8 @@ namespace ConfigurationManager
             _value = value;
         }
 
+        public ConfigItem() { }
+
         /// <summary>
         /// Config item key.
         /// </summary>       
